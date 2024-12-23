@@ -23,18 +23,62 @@ In timing diagram Q0 is changing as soon as the negative edge of clock pulse is 
 ![image](https://github.com/naavaneetha/4-BIT-RIPPLE-COUNTER/assets/154305477/85e1958a-2fc1-49bb-9a9f-d58ccbf3663c)
 
 **Procedure**
+1.Initialize the shift register to a known state (e.g., all zeros).
 
+2.Input a bit serially into the shift register.
+
+3.Shift the contents of the register one position to the right (or left).
+
+4.Output the shifted bit from the last stage of the register.
+
+5.Repeat steps 2-4 for each bit you want to input and shift.
 /* write all the steps invloved */
 
 **PROGRAM**
+```
+exp12 (
+    input clk,     // Clock input
+    input reset,   // Reset input (active high)
+    output [3:0] q // 4-bit output
+);
+    // Internal signals for flip-flops
+    reg [3:0] q_int;
 
-/* Program for 4 Bit Ripple Counter and verify its truth table in quartus using Verilog programming.
+    // Assign internal register to output
+    assign q = q_int;
 
- Developed by: RegisterNumber:
-*/
+    always @(posedge clk or posedge reset) begin
+        if (reset) 
+            q_int[0] <= 1'b0; // Reset the first bit to 0
+        else 
+            q_int[0] <= ~q_int[0]; // Toggle the first bit on clock edge
+    end
+
+    // Generate the other flip-flops based on the output of the previous one
+    genvar i;
+    generate
+        for (i = 1; i < 4; i = i + 1) begin : ripple
+            always @(posedge q_int[i-1] or posedge reset) begin
+                if (reset) 
+                    q_int[i] <= 1'b0; // Reset the bit to 0
+                else 
+                    q_int[i] <= ~q_int[i]; // Toggle the bit on clock edge of previous stage
+            end
+        end
+    endgenerate
+endmodule
+
+
+ Developed by:Yasvanth RD
+ RegisterNumber:24900517
+
+```
 
 **RTL LOGIC FOR 4 Bit Ripple Counter**
+![396412619-538c0fb3-9b44-4898-a693-be90387cff7e](https://github.com/user-attachments/assets/f7602316-0a3e-4d82-83fb-91a8746c696c)
 
 **TIMING DIGRAMS FOR 4 Bit Ripple Counter**
+![396412733-a3b5c3bd-62a7-4c74-9d7f-2898d4cf45ab](https://github.com/user-attachments/assets/7bd1f533-45de-4413-a84f-ff00bf5935ac)
 
 **RESULTS**
+Thus the program executed succesfully
