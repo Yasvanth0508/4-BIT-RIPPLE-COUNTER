@@ -36,37 +36,39 @@ In timing diagram Q0 is changing as soon as the negative edge of clock pulse is 
 
 **PROGRAM**
 ```
-exp12 (
-    input clk,     // Clock input
-    input reset,   // Reset input (active high)
-    output [3:0] q // 4-bit output
+module ripple (
+input clk,    
+input reset,   
+output [3:0] q 
 );
-    // Internal signals for flip-flops
-    reg [3:0] q_int;
+// Internal signals for flip-flops
+reg [3:0] q_int;
 
-    // Assign internal register to output
-    assign q = q_int;
 
-    always @(posedge clk or posedge reset) begin
-        if (reset) 
-            q_int[0] <= 1'b0; // Reset the first bit to 0
-        else 
-            q_int[0] <= ~q_int[0]; // Toggle the first bit on clock edge
-    end
+assign q = q_int;
 
-    // Generate the other flip-flops based on the output of the previous one
-    genvar i;
-    generate
-        for (i = 1; i < 4; i = i + 1) begin : ripple
-            always @(posedge q_int[i-1] or posedge reset) begin
-                if (reset) 
-                    q_int[i] <= 1'b0; // Reset the bit to 0
-                else 
-                    q_int[i] <= ~q_int[i]; // Toggle the bit on clock edge of previous stage
-            end
+always @(posedge clk or posedge reset) begin
+    if (reset) 
+        q_int[0] <= 1'b0; 
+    else 
+        q_int[0] <= ~q_int[0];
+end
+
+
+genvar i;
+generate
+    for (i = 1; i < 4; i = i + 1) begin : ripple
+        always @(posedge q_int[i-1] or posedge reset) begin
+            if (reset) 
+                q_int[i] <= 1'b0; 
+            else 
+                q_int[i] <= ~q_int[i]; 
         end
-    endgenerate
+    end
+endgenerate
 endmodule
+
+
 
 
  Developed by:Yasvanth RD
@@ -75,10 +77,12 @@ endmodule
 ```
 
 **RTL LOGIC FOR 4 Bit Ripple Counter**
-![396412619-538c0fb3-9b44-4898-a693-be90387cff7e](https://github.com/user-attachments/assets/f7602316-0a3e-4d82-83fb-91a8746c696c)
+![398736068-d5564d3d-089c-4d33-80db-154cf8ff34d5](https://github.com/user-attachments/assets/b9714912-eb31-4f79-95ad-ee5f7e3d21a3)
+
 
 **TIMING DIGRAMS FOR 4 Bit Ripple Counter**
-![396412733-a3b5c3bd-62a7-4c74-9d7f-2898d4cf45ab](https://github.com/user-attachments/assets/7bd1f533-45de-4413-a84f-ff00bf5935ac)
+![398736100-0f09222c-c54d-4dda-9354-27ad75ca2f7b](https://github.com/user-attachments/assets/fb6375d3-5f9c-4585-9467-d50978649b10)
+
 
 **RESULTS**
 Thus the program executed succesfully
